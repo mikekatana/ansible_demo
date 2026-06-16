@@ -1,0 +1,21 @@
+---
+- name: FlashBlade management
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Gather FlashBlade info
+      purestorage.flashblade.purefb_info:
+        gather_subset: [minimum]
+      register: fb
+
+    - name: Show array name
+      ansible.builtin.debug:
+        var: fb.purefb_info.default
+
+    - name: Ensure an NFS filesystem exists
+      purestorage.flashblade.purefb_fs:
+        name: ansible-demo
+        size: 1T
+        nfsv4: true
+        state: present
