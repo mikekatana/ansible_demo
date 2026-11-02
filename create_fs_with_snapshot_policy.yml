@@ -1,0 +1,30 @@
+---
+# Create a filesystem and attach an hourly snapshot policy with 10h retention.
+# Auth: PUREFB_URL / PUREFB_API env vars.
+- name: Create filesystem and hourly snapshot policy
+  hosts: localhost
+  gather_facts: false
+  vars:
+    fs_name: everpure-flashblade-demo
+    fs_size: 1T
+    policy_name: hourly-10h
+    snap_every_s: 3600       # 1 hour
+    snap_keep_s: 36000        # 10 hours
+  tasks:
+    - name: Create filesystem
+      purestorage.flashblade.purefb_fs:
+        name: "{{ fs_name }}"
+        size: "{{ fs_size }}"
+        nfsv3: true
+        state: present
+
+    - name: Create snapshot policy and attach filesystem
+      purestorage.flashblade.purefb_policy:
+        name: "{{ policy_name }}"
+        policy_type: snapshot
+        enabled: true
+        every: "{{ snap_every_s }}"
+        keep_for: "{{ snap_keep_s }}"
+        filesystem:
+          - "{{ fs_name }}"
+        state: present
