@@ -1,0 +1,18 @@
+---
+# Create a filesystem. Intended as the job template that runs AFTER an
+# approval node in an AWX workflow (no interactive pause here).
+# Auth: PUREFB_URL / PUREFB_API env vars (inject via an AWX custom credential).
+# Override with extra vars / survey: fs_name, fs_size.
+- name: Create filesystem
+  hosts: localhost
+  gather_facts: false
+  vars:
+    fs_name: everpure-webinar-demo-2
+    fs_size: 1T
+  tasks:
+    - name: Create filesystem
+      purestorage.flashblade.purefb_fs:
+        name: "{{ fs_name }}"
+        size: "{{ fs_size }}"
+        nfsv3: true
+        state: present

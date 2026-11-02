@@ -1,0 +1,15 @@
+---
+# Build with: ansible-builder build -t flashblade-ee -f execution-environment.yml
+# Then push the image to a registry AWX can pull from and add it as an EE.
+version: 3
+images:
+  base_image:
+    name: quay.io/ansible/awx-ee:latest
+dependencies:
+  galaxy:
+    collections:
+      - name: purestorage.flashblade
+        version: 1.24.0
+  python:
+    # Newer SDK releases drop classes the collection imports (e.g. PolicyPatch)
+    - py-pure-client==1.80.0
